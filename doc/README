@@ -1,0 +1,61 @@
+# AbleApp
+
+Command line oriented DevOps manager.
+
+# Features
+
+1. Manage projects on the 7 classic chains:
+  * Plan
+  * Create
+  * Verify
+  * Pack
+  * Configure
+  * Release
+  * Monitor
+2. Support to customized automated job queue as robots
+3. Store sources and artifacts on SCM as git 
+
+#DevOps tools (and toys) with Unix Shell
+
+- bash
+- Tilix
+- screen
+- xterm
+- vim
+- sc, psc
+- ledger                  *
+- taskwarrior
+- markdwon
+- elinks
+- links2
+- mutt
+- postfix
+- fetchmail
+- curl
+- wget
+- nmap
+- top,htop
+- vmstat
+- lsof
+- tcpdump
+- netstat
+- iotop, iostat
+- iptraf
+- nagios
+- wireshark
+- abl
+- yo
+- git-utils
+- gitlab
+- github
+- docker
+- vagrant
+- lxd
+- juju
+- virtualbox
+- image Magick             *
+- Sox audio
+- nama
+
+- command to install all that stuff:
+???? 

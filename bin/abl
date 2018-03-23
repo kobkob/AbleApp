@@ -1,0 +1,522 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+use lib 'lib';
+
+# External dependencies.
+use App::Able;
+use Cwd qw();
+use Data::Dumper;
+use Data::Section -setup;
+use File::Spec;
+use File::Copy;
+use Getopt::Long;
+use Config::YAML;
+#use Git::Repository;
+use Pod::Usage qw();
+use Try::Tiny;
+use autodie;
+
+use Curses;
+ 
+
+=head1 NAME
+
+aapp - Setup utility for App::Able
+
+
+=head1 VERSION
+
+Version 1.9.0
+
+
+=head1 DESCRIPTION
+
+This command line utility allows setting up the Agile Management
+AbleApp so that all of App::Able' bots are triggered properly.
+
+=head1 SYNOPSIS
+
+	abl <command> [-option] [value] 
+
+
+=head1 COMMANDS
+
+=over 4
+
+=item * C<help> - Show the commands available.
+
+=item * C<setup> - Setup a new project.
+
+=item * C<info> - Show information about a project.
+
+=item * C<edit> - Edit a project.
+
+=item * C<delete> - Delete a project.
+
+=item * C<run> - Run a project.
+
+=item * C<stop> - Stop a project.
+
+=item * C<list> - List the projects.
+
+=item * C<version> - Display the version of App::Able in use.
+
+=back
+
+
+=head1 OPTIONS
+
+=over 4
+
+=item * C<--verbose> - Show all steps when running a project 
+
+=back
+
+=cut
+
+# Parse the action.
+my $action = shift( @ARGV );
+usage() if !defined( $action ) || $action eq '';
+
+# Parse command-line options.
+#my $chmod = '0755';
+my $author;
+my $email;
+Getopt::Long::GetOptions(
+#	'chmod'     => \$chmod,
+        'author'    => \$author,
+        'email'     => \$email,
+);
+
+create_config() unless (-e $ENV{"HOME"}."/.ablrc");
+create_db()     unless (-e $ENV{"HOME"}."/.abldb");
+
+# Parse configuration
+my $c = Config::YAML->new( config => $ENV{"HOME"}."/.ablrc",
+                           foo    => "abc",
+                           bar    => "xyz",
+                           baz    => [ 1, 2, 3 ],
+                         );
+# Load db
+my $db = {};
+
+# The app
+my $able = new App::Able(
+  config => $c,
+  db => $db,
+);
+
+
+# List of supported bots we'll need to set up.
+my $supported_bots = $App::Able::BOTS;
+
+# Actions.
+my $actions =
+{
+	help      => \&usage,
+	setup     => \&setup,
+	list      => \&list,
+	uninstall => \&uninstall,
+	version   => \&version,
+};
+#print Dumper $actions;
+
+if ( !defined( $actions->{ $action } ) )
+{
+	usage( "The action '$action' is not valid." );
+        exit(0);
+}
+
+$actions->{ $action }();
+
+
+# Curses screen
+initscr;
+my $win;
+
+$win = new Curses;
+
+$win->addstr(10, 1, 'Press any key to quit: ');
+my $ch = $win->getchar;
+die "getchar failed" unless defined $ch;
+$win->refresh;
+
+
+endwin;
+# End Curses
+
+exit(0);
+
+=head1 FUNCTIONS
+
+=head2 create_config()
+
+Reset configuration to default state, writing the config file.
+
+	create_config();
+
+=cut
+
+sub create_config
+{
+   my $filename = $ENV{"HOME"}."/.ablrc";
+   open CFHANDLE, ">$filename" or die "touch $filename: $!\n"; 
+   close CFHANDLE;
+   my $c = Config::YAML->new( 
+     config => $ENV{"HOME"}."/.ablrc",
+     output => $ENV{"HOME"}."/.ablrc", 
+     foo    => "abc",
+     bar    => "xyz",
+     baz    => [ 1, 2, 3 ],
+   );
+   $c->write;
+}
+
+=head2 create_db()
+
+Reset configuration to default state, writing the config file.
+
+	create_db();
+
+=cut
+
+sub create_db
+{
+   my $filename = $ENV{"HOME"}."/.abldb";
+   copy("abl.db",$filename) or die "Can create db file: $!";
+}
+
+
+
+=head2 usage()
+
+Display the usage information on the command line and force exit.
+
+	usage();
+
+=cut
+
+sub usage
+{
+	my ( $message ) = @_;
+	chomp( $message )
+		if defined( $message );
+
+	$message //= "Setup utility for App::Able.";
+	$message = "\n$message\n";
+
+	Pod::Usage::pod2usage(
+		{
+			-message  => $message,
+			-exitval  => 'NOEXIT',
+      -verbose  => 99,
+			-sections =>
+			[
+				qw(
+					SYNOPSIS
+					COMMANDS
+					OPTIONS
+				)
+			],
+		}
+	);
+	exit(0);
+}
+
+
+=head2 uninstall()
+
+Remove  bots triggering App::Able from the current  repository.
+
+	uninstall();
+
+=cut
+
+sub uninstall
+{
+	my $bots_directory = get_bots_directory();
+
+	foreach my $bot_name ( @$supported_bots )
+	{
+		my $bot_filename = File::Spec->catfile( $bots_directory, $bot_name );
+		unlink( $bot_filename );
+	}
+
+	print "The  bots have been uninstalled successfully.\n";
+
+	return;
+}
+
+
+=head2 setup()
+
+Install  bots triggering App::Able for the current  repository.
+
+	setup();
+
+=cut
+
+sub setup
+{ 
+	return;
+}
+
+
+
+=commented
+
+	my $bots_directory = get_bots_directory();
+
+	# Retrieve the bot template.
+	my $bot_template_ref = __PACKAGE__->section_data( 'bot_template' );
+	my $template = $$bot_template_ref;
+	$template =~ s/\Q{{perl}}\E/$^X/g;
+
+	my $errors = 0;
+	foreach my $bot_name ( @$supported_bots )
+	{
+		my $bot_content = $template;
+		$bot_content =~ s/\Q{{name}}\E/$bot_name/g;
+
+		my $bot_filename = File::Spec->catfile( $bots_directory, $bot_name );
+
+		try
+		{
+			# Write the bot file.
+			open( my $bot_fh, '>', $bot_filename );
+			print $bot_fh $bot_content;
+			close( $bot_fh );
+
+			# Make the bot file executable.
+			chmod oct( $chmod ), $bot_filename;
+		}
+		catch
+		{
+			$errors++;
+			print "Unable to set up bot file for $bot_name, skipped: $_\n";
+		};
+	}
+
+	print $errors > 0
+		? 'Some errors occurred when installing the  bots, please try again.'
+		: 'The  bots have been installed successfully.';
+	print "\n";
+
+=cut
+
+=head2 version()
+
+Display the version of App::Able in use.
+
+	version();
+
+=cut
+
+sub version
+{
+	print "Using App::Able version $App::Able::VERSION.\n";
+
+	# Instantiate an object, but we're not using any bot-dependent features
+	# (yet) in this function, so any bot name will do here.
+	#my $app = App::Able->new(
+	#	name => 'pre-commit',
+	#);
+
+=comment do we need plugins?
+
+	# Retrieve all the plugins available.
+	my @plugins =
+		sort keys
+		(
+			%{{
+				map { $_ => 1 }
+				map { @$_ }
+				values %{ $app->get_all_plugins() || {} }
+			}}
+		);
+
+	# Display plugin versions.
+	if ( scalar( @plugins ) != 0 )
+	{
+		print "\n";
+		print "Plugins:\n";
+		foreach my $plugin_name ( @plugins )
+		{
+			printf(
+				"  - %s: v%s\n",
+				$plugin_name,
+				$plugin_name->VERSION(),
+			);
+		}
+	}
+
+=cut
+        exit(0);
+	#return;
+}
+
+
+=head2 list()
+
+List the plugins currently installed.
+
+	list();
+
+=cut
+
+sub list
+{
+
+=commented
+
+	# Instantiate an object, but we're not using any bot-dependent features
+	# (yet) in this function, so any bot name will do here.
+	my $app = App::Able->new(
+		name => 'pre-commit',
+	);
+
+	# Retrieve all the plugins available.
+	my $all_plugins = $app->get_all_plugins();
+
+	# Display the list of plugins by bot.
+	print "\n";
+	if ( scalar( keys %$all_plugins ) == 0 )
+	{
+		print "No plugins installed!\n";
+	}
+	else
+	{
+		foreach my $bot_name ( keys %$all_plugins )
+		{
+			print "Plugins active for $bot_name:\n";
+			foreach my $plugin_name ( @{ $all_plugins->{ $bot_name } } )
+			{
+				print "    - $plugin_name\n";
+			}
+			print "\n";
+		}
+	}
+
+=cut
+
+	return;
+}
+
+
+=head1 PRIVATE FUNCTIONS
+
+=head2 get_bots_directory()
+
+Return the path to the bots directory for the current  repository.
+
+	my $bots_directory = get_bots_directory();
+
+=cut
+
+sub get_bots_directory
+{
+   # read from config
+}
+=commented	
+
+	# Make sure we're in a  repository.
+	my $current_directory = Cwd::getcwd();
+	my $repository = Git::Repository->new( work_tree => $current_directory );
+
+	die "The command '$action' requires being in a  repository, which $current_directory is not.\n"
+		if !defined( $repository );
+
+	# Find out the  repository, as the bots directory will be directly under
+	# that path.
+	my $_directory = $repository->_dir();
+	die "Could not determine  directory for the repository in $current_directory.\n"
+		if !defined( $_directory );
+
+	return File::Spec->catfile( $_directory, 'bots' );
+
+=cut
+
+
+
+=head1 BUGS
+
+Please report any bugs or feature requests through the web interface at
+L<https://github.com/kobkob/App-Able/issues/new>.
+I will be notified, and then you'll automatically be notified of progress on
+your bug as I make changes.
+
+
+=head1 SUPPORT
+
+You can find documentation for this module with the perldoc command.
+
+	perldoc App::Able
+
+
+You can also look for information at:
+
+=over
+
+=item * GitHub's request tracker
+
+L<https://github.com/kobkob/App-Able/issues>
+
+=item * AnnoCPAN: Annotated CPAN documentation
+
+L<http://annocpan.org/dist/app-able>
+
+=item * CPAN Ratings
+
+L<http://cpanratings.perl.org/d/app-able>
+
+=item * MetaCPAN
+
+L<https://metacpan.org/release/App-Able>
+
+=back
+
+
+=head1 AUTHOR
+
+L<|https://metacpan.org/author/MONSENHOR>,
+C<< <monsenhor at cpan.org> >>.
+
+
+=head1 COPYRIGHT & LICENSE
+
+Copyright 2018 Ricardo Filipo.
+
+This code is free software; you can redistribute it and/or modify it under the
+same terms as Perl 5 itself.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the LICENSE file for more details.
+
+=cut
+
+
+__DATA__
+
+__[ bot_template ]__
+#!{{perl}}
+
+use strict;
+use warnings;
+
+use App::Able;
+
+
+=head1 NAME
+
+{{name}} - Call App::Able for the {{name}} bot.
+
+=cut
+
+App::Able->run(
+	name      => $0,
+	arguments => \@ARGV,
+);
