@@ -1,5 +1,5 @@
 #!perl -T
-use 5.006;
+use 5.12.0;
 use strict;
 use warnings;
 use Test::More;
@@ -22,30 +22,33 @@ $app->setup_model($schema);
 $app->setup_bot($minion);
 
 # Load the bots
+# actualy it can run external commands, straigth subs or load bot modules
 $app->bot(
   [
     {
-      id      => 'test1',
-      tool    => 'Project',
-      command => sub {
-        my ( $job, @args ) = @_;
-        sleep 5;
-        say 'This is a long background worker process.';
-      },
+      id   => 'bot1',
+      tool => 'Project',
+      run =>
+        'curl http://kobkob.org',    # external command
       autorun => 1,
     },
     {
-      id      => 'test2',
+      id      => 'bot2',
       tool    => 'Project',
-      command => sub {
+      command => sub {               # perl sub
         my ( $job, @args ) = @_;
         sleep 2;
         say
           'This is a short background worker process.';
-      }
-        autorun => 1,
+      },
+      autorun => 1,
     },
-
+    {
+      id      => 'bot3',
+      tool    => 'Project',
+      module  => 't/bot3.pm',        # perl module
+      autorun => 1,
+    },
   ]
 );
 
@@ -53,12 +56,12 @@ $app->bot(
 my $rs = $app->{Project}
   ->create( { buid => 1, name => "BotTest" } );
 
-ok( $bot, "It's a bot swarn" );
+ok( $app->bot, "It's a bot swarn" );
 
 $app->{Project}->delete( { id => $rs->id } );
 
 use Data::Dumper;
-print Dumper $bot;
+print Dumper $app->bot;
 
 diag("Testing robots.");
 

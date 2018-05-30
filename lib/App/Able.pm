@@ -138,6 +138,49 @@ sub setup_model
   return 1;
 }
 
+=head3 setup_bot
+
+   Parameters :
+      the_bot : \$ : The bot object
+
+   Return : 
+      integer
+
+   Description : 
+      Setup the bot
+
+=cut
+
+sub setup_bot
+{
+  my $self = shift;
+  my $bot = shift;
+  $self->{bot} = $bot;
+  return 1;
+}
+
+=head3 bot
+
+   Parameters :
+      bot : \$ : The bot object
+
+   Return : 
+      integer
+
+   Description : 
+      Runs the bot
+
+=cut
+
+sub bot
+{
+  my $self = shift;
+  my $bot = shift;
+  $self->{bot} = $bot;
+  return 1;
+}
+
+
 
 
 

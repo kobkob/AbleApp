@@ -15,13 +15,18 @@ Command line oriented DevOps manager.
 2. Support to customized automated job queue as robots
 3. Store sources and artifacts on SCM as git 
 
-#DevOps tools (and toys) with Unix Shell
+#DevOps tools (and toys) within Unix Shell
 
 - bash
+- awk
+- sed
+- perl
+- node.js
 - Tilix
 - screen
 - xterm
 - vim
+- emacs
 - sc, psc
 - ledger                  *
 - taskwarrior
@@ -50,12 +55,17 @@ Command line oriented DevOps manager.
 - github
 - docker
 - vagrant
+- ansible
+- muppet
 - lxd
 - juju
+- conjure
 - virtualbox
-- image Magick             *
+- image Magick
+- ffmpg
 - Sox audio
 - nama
 
 - command to install all that stuff:
 ???? 
+
