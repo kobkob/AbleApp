@@ -13,6 +13,11 @@ App::Able - The agile DevOps manager
 
 Version 0.01
 
+In this version we use defaults, as SQLite database
+and the bots: launch, deploy, email, run and stop
+
+Use perldoc App::Able::Bots to read about that bots.
+
 =cut
 
 our $VERSION = '0.01';
@@ -44,14 +49,7 @@ Works as a Facade for the 7 modules.
     use App::Able;
 
     my $plan = App::Able->new();
-    ...
-
-=head1 EXPORT
-
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
-
-
+    
 
 =head1 PUBLIC METHODS
 
@@ -94,7 +92,7 @@ sub load_conf
       App::Able
 
    Description : 
-      Create a new Able
+      Create a new Able object
 
 =cut
 

@@ -1,13 +1,4 @@
-
-
 package App::Able::iBot;
-
-
-#UML_MODELER_BEGIN_PERSONAL_VARS_iBot
-
-#UML_MODELER_END_PERSONAL_VARS_iBot
-
-
 
 
 =head1 IBOT

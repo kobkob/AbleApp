@@ -28,6 +28,7 @@ ok($schema,"Connects to db!!!");
 foreach my $entity (qw 'Release Verification BussinessUnit Plan Package Monitor Domain Creation Configuration Project' ) {
 
   ok($schema->sources($entity),"Has the '$entity' table!!!");
+  # uncomment bellow to see the entities
   #diag( "--- $entity columns: " . 
   #  join ( " ", $schema->source($entity)->columns ) );
   #diag( "--- $entity relations: " . 

@@ -1,5 +1,3 @@
-
-
 package App::Able::Model;
 
 
