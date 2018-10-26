@@ -186,7 +186,7 @@ Reset configuration to default state, writing the config file.
 sub create_db
 {
    my $filename = $ENV{"HOME"}."/.abldb";
-   copy("abl.db",$filename) or die "Can create db file: $!";
+   copy("abl.db",$filename) or die "Cant create db file: $!";
 }
 
 
@@ -229,6 +229,7 @@ sub usage
 
 =head2 uninstall()
 
+Delete a project.
 Remove  bots triggering App::Able from the current  repository.
 
 	uninstall();
@@ -253,7 +254,8 @@ sub uninstall
 
 =head2 setup()
 
-Install  bots triggering App::Able for the current  repository.
+Creates a project
+Install bots triggering App::Able for the current project.
 
 	setup();
 

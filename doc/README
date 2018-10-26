@@ -33,7 +33,9 @@ Command line oriented DevOps manager.
 - markdwon
 - elinks
 - links2
+- w3m
 - mutt
+- abook
 - postfix
 - fetchmail
 - curl

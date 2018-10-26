@@ -9,6 +9,14 @@ Organizes and performs DevOps actions on agile projects.
         my $plan = App::Able->new();
         ...
 
+  * Plan
+  * Create
+  * Verify
+  * Pack
+  * Configure
+  * Release
+  * Monitor
+
 
 INSTALLATION
 
