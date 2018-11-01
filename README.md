@@ -11,8 +11,9 @@ You will find some sheets and standard DevOps material there. Enjoy!
 ---
 
 App-Able organizes and performs DevOps actions on agile projects.
+Works as a Facade for the 7 modules.
 
-    Works as a Facade for the 7 modules.
+implements the command abl, see below
 
 ## SINOPSYS
 
@@ -35,8 +36,6 @@ App-Able organizes and performs DevOps actions on agile projects.
 ## MODULES
 
   * Plan
-    
-
   * Create
   * Verify
   * Pack
@@ -50,3 +49,7 @@ App-Able organizes and performs DevOps actions on agile projects.
 https://en.wikipedia.org/wiki/DevOps
 
 https://en.wikipedia.org/wiki/DevOps_toolchain
+
+abl: 
+see doc/abl/README
+or man doc/abl.1

@@ -20,7 +20,7 @@ Use perldoc App::Able::Bots to read about that bots.
 
 =cut
 
-our $VERSION = '0.01';
+our $VERSION = '0.0.1';
 
 our $MODEL = 'SQLite';
 

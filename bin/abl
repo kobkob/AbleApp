@@ -19,17 +19,26 @@ use Pod::Usage qw();
 use Try::Tiny;
 use autodie;
 
-use Curses;
+#use Curses;
+use Carp qw(croak);
+use Term::ANSIColor 4.00 qw(color);
+
+# Screen width for centering headings.
+use constant SCREEN_WIDTH => 80;
+ 
+# The basic attributes and eight colors.
+use constant ATTRIBUTES => qw(bold dark italic underline blink concealed);
+use constant COLORS     => qw(black red green yellow blue magenta cyan white);
  
 
 =head1 NAME
 
-aapp - Setup utility for App::Able
+abl - Setup utility for App::Able
 
 
 =head1 VERSION
 
-Version 1.9.0
+Version 0.0.1
 
 
 =head1 DESCRIPTION
@@ -48,8 +57,6 @@ AbleApp so that all of App::Able' bots are triggered properly.
 
 =item * C<help> - Show the commands available.
 
-=item * C<setup> - Setup a new project.
-
 =item * C<info> - Show information about a project.
 
 =item * C<edit> - Edit a project.
@@ -64,6 +71,28 @@ AbleApp so that all of App::Able' bots are triggered properly.
 
 =item * C<version> - Display the version of App::Able in use.
 
+=item * C<setup> - Setup a project, interactivelly, step by step.  Uses the seting up bot (defaults to abl-setup)
+
+=item * C<create> - Create a new project, uses git bot
+
+=item * C<info> - Show all info about a project.
+
+=item * C<run> - Run a bot.
+
+=item * C<stop> - Kill a running bot.
+
+=item * C<plan> - Run the planning bot (defaults to duk)
+   
+=item * C<verify> - Run the tests bot in the project (defaults to prove)
+
+=item * C<pack> - Creates a package with cpan
+
+=item * C<configure> - Configures config bot (defaults to rex)
+
+=item * C<release> - Install the project (delaults to cpan)
+
+=item * C<monitor> - Check issues in deployed instances (defaults to ablmom bot)
+
 =back
 
 
@@ -77,6 +106,7 @@ AbleApp so that all of App::Able' bots are triggered properly.
 
 =cut
 
+##################################################
 # Parse the action.
 my $action = shift( @ARGV );
 usage() if !defined( $action ) || $action eq '';
@@ -90,6 +120,8 @@ Getopt::Long::GetOptions(
         'author'    => \$author,
         'email'     => \$email,
 );
+
+##################################################
 
 create_config() unless (-e $ENV{"HOME"}."/.ablrc");
 create_db()     unless (-e $ENV{"HOME"}."/.abldb");
@@ -109,20 +141,31 @@ my $able = new App::Able(
   db => $db,
 );
 
-
 # List of supported bots we'll need to set up.
 my $supported_bots = $App::Able::BOTS;
 
 # Actions.
 my $actions =
 {
-	help      => \&usage,
-	setup     => \&setup,
-	list      => \&list,
+	help      => \&usage    ,
+	setup     => \&setup    ,
+	list      => \&list     ,
 	uninstall => \&uninstall,
-	version   => \&version,
+	version   => \&version  ,
+  create    => \&create   , 
+  info      => \&info     , 
+  run       => \&run      , 
+  stop      => \&stop     , 
+  plan      => \&plan     , 
+  verify    => \&verify   , 
+  pack      => \&pack     , 
+  configure => \&configure, 
+  release   => \&release  , 
+  monitor   => \&monitor  , 
+  usage     => \&usage    , 
+  edit      => \&edit     , 
+  delete    => \&delete   , 
 };
-#print Dumper $actions;
 
 if ( !defined( $actions->{ $action } ) )
 {
@@ -131,22 +174,6 @@ if ( !defined( $actions->{ $action } ) )
 }
 
 $actions->{ $action }();
-
-
-# Curses screen
-initscr;
-my $win;
-
-$win = new Curses;
-
-$win->addstr(10, 1, 'Press any key to quit: ');
-my $ch = $win->getchar;
-die "getchar failed" unless defined $ch;
-$win->refresh;
-
-
-endwin;
-# End Curses
 
 exit(0);
 
@@ -179,14 +206,12 @@ sub create_config
 
 Reset configuration to default state, writing the config file.
 
-	create_db();
-
 =cut
 
 sub create_db
 {
    my $filename = $ENV{"HOME"}."/.abldb";
-   copy("abl.db",$filename) or die "Cant create db file: $!";
+   #copy("abl.db",$filename) or die "Cant create db file: $!";
 }
 
 
@@ -194,8 +219,6 @@ sub create_db
 =head2 usage()
 
 Display the usage information on the command line and force exit.
-
-	usage();
 
 =cut
 
@@ -223,16 +246,17 @@ sub usage
 			],
 		}
 	);
+  print color('bold blue');
+  print " ====== abl is the command line utility for App::Able =====\n";
+  print color('reset');
+
 	exit(0);
 }
-
 
 =head2 uninstall()
 
 Delete a project.
 Remove  bots triggering App::Able from the current  repository.
-
-	uninstall();
 
 =cut
 
@@ -251,13 +275,10 @@ sub uninstall
 	return;
 }
 
-
 =head2 setup()
 
 Creates a project
 Install bots triggering App::Able for the current project.
-
-	setup();
 
 =cut
 
@@ -265,6 +286,168 @@ sub setup
 { 
 	return;
 }
+
+=head2 create()
+
+Creates a project without stting it up
+
+=cut
+
+sub create   { 
+  print color('bold blue');
+  print " ====== Creating a new project =====\n";
+  print color('reset');
+  return; 
+} 
+
+=head2 info()
+
+Return information about the project
+
+=cut
+
+sub info     {  
+  print color('bold blue');
+  print " ====== Projec info: =====\n";
+  print color('reset');
+  return; 
+} 
+
+
+=head2 run()
+
+Run a bot if it exists. Othewise returns a list of available bots
+
+=cut
+
+sub run      {  
+  print color('bold blue');
+  print " ====== Running bot =====\n";
+  print color('reset');
+  return; 
+} 
+
+=head2 stop()
+
+Stops a bot if it's still running
+
+=cut
+
+sub stop     {  
+  print color('bold blue');
+  print " ====== Creating a new project =====\n";
+  print color('reset');
+  return; 
+} 
+
+=head2 plan()
+
+Creates a project plan interactively
+
+=cut
+
+sub plan     {  
+  print color('bold blue');
+  print " ====== Creating plan  =====\n";
+  print color('reset');
+  return; 
+} 
+
+=head2 verify()
+
+Verify and test project
+
+=cut
+
+sub verify   {  
+  print color('bold blue');
+  print " ====== Testing =====\n";
+  print color('reset');
+  return; 
+} 
+
+=head2 pack()
+
+Creates a apckage for project
+
+=cut
+
+sub pack     {  
+  print color('bold blue');
+  print " ====== Packing =====\n";
+  print color('reset');
+  return; 
+} 
+
+=head2 configure()
+
+Configure or reconfigure a project
+
+=cut
+
+sub configure{  
+  print color('bold blue');
+  print " ====== Configuring =====\n";
+  print color('reset');
+  return; 
+} 
+
+=head2 release()
+
+Releases a project
+
+=cut
+
+sub release  {  
+  print color('bold blue');
+  print " ====== Releasing =====\n";
+  print color('reset');
+  return; 
+} 
+
+=head2 monitor()
+
+Monitores a project
+
+=cut
+
+
+sub monitor  {  
+  print color('bold blue');
+  print " ====== Monitoring =====\n";
+  print color('reset');
+  return; 
+} 
+
+=head2 edit()
+
+Edit a existing project
+
+=cut
+
+sub edit     {  
+  print color('bold blue');
+  print " ====== Edit =====\n";
+  print color('reset');
+  return; 
+} 
+
+=head2 delete()
+
+Delete a project
+
+=cut
+
+
+sub delete   {  
+  print color('bold blue');
+  print " ====== Delete =====\n";
+  print color('reset');
+  return; 
+} 
+
+
+
 
 
 
@@ -312,8 +495,6 @@ sub setup
 =head2 version()
 
 Display the version of App::Able in use.
-
-	version();
 
 =cut
 
