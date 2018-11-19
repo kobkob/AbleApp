@@ -1,24 +1,24 @@
 {
-   "name" : "app-able",
-   "main" : "'lib/App/Able.pm'",
+   "directories" : {
+      "man" : "./man",
+      "doc" : "./doc/mmd",
+      "lib" : "./lib"
+   },
    "repository" : "git@gitlab.com:rfilipo/AbleApp.git",
-   "version" : "0.0.1",
-   "description" : "DevOps cli framework",
-   "contributors" : [
-      "Filipo <filipo@kobkob.org>"
-   ],
-   "engines" : [
-      "node >=0.1.27 <0.1.30"
-   ],
-   "homepage" : "http://kobkob.org",
-   "author" : "Monsenhor <monsenhor@cpan.org>",
    "scripts" : {
       "postinstall" : "$SHELL __script/postinstall.sh",
       "postactivate" : "$SHELL __script/postactivate.sh"
    },
-   "directories" : {
-      "man" : "./man",
-      "lib" : "./lib",
-      "doc" : "./doc/mmd"
-   }
+   "homepage" : "http://kobkob.org",
+   "contributors" : [
+      "Filipo <filipo@kobkob.org>"
+   ],
+   "main" : "'lib/App/Able.pm'",
+   "engines" : [
+      "node >=0.1.27 <0.1.30"
+   ],
+   "version" : "0.0.1",
+   "author" : "Monsenhor <monsenhor@cpan.org>",
+   "name" : "app-able",
+   "description" : "DevOps cli framework"
 }
