@@ -1,9 +1,0 @@
-
---
--- TABLE: Test
--- 
---  
-
-CREATE TABLE Test (
-);
-ALTER TABLE Test ADD CONSTRAINT  FOREIGN KEY () REFERENCES Creation ();

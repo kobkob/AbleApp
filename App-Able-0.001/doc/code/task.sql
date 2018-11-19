@@ -1,9 +1,0 @@
-
---
--- TABLE: Task
--- 
---  
-
-CREATE TABLE Task (
-);
-ALTER TABLE Task ADD CONSTRAINT  FOREIGN KEY () REFERENCES Creation ();
