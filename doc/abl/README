@@ -23,7 +23,7 @@ DESCRIPTION
 
        pack: Creates a package for the project (defaults to cpan)
 
-       configure: Run config bot (defaults to rex)
+       configure: Run config bot
 
        release: Install the project (delaults to cpan)
 

@@ -2,6 +2,9 @@ use 5.006;
 use strict;
 use warnings;
 use ExtUtils::MakeMaker;
+use File::ShareDir::Install;
+ 
+install_share module => 'App::Able' => 'assets';
 
 WriteMakefile(
     NAME             => 'App::Able',
@@ -23,4 +26,8 @@ WriteMakefile(
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean => { FILES => 'App-Able-*' },
+    EXE_FILES => ["bin/abl"]
 );
+
+package MY;
+use File::ShareDir::Install qw(postamble);

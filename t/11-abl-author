@@ -1,0 +1,10 @@
+#!perl -T
+use 5.12.0;
+use strict;
+use warnings;
+
+use Test::More tests => 1;
+use Test::Perl::Critic (-severity => 2); # will not pass severity 1 because $ENV
+
+critic_ok("bin/abl");
+ 
