@@ -1,6 +1,5 @@
 package App::Able;
 
-use 5.006;
 use strict;
 use warnings;
 
@@ -14,7 +13,13 @@ App::Able - The agile DevOps manager
 Version 0.01
 
 In this version we use defaults, as SQLite database
-and the bots: launch, deploy, email, run and stop
+and the bots: 
+
+- duk
+- dzil
+- mojo
+
+TODO: launch, deploy, email, run, stop, etc
 
 Use perldoc App::Able::Bots to read about that bots.
 
@@ -99,10 +104,11 @@ sub load_conf
 sub new
 {
   my $self = shift;
-  my %stuff = %_; # % : Stuff to put on able
+  my %stuff = @_; # % : Stuff to put on able
   my @acts = qw (Project Plan Create Verify Pack Configure Release Monitor);
   $stuff{model} = {};
   $stuff{actions} = \@acts;
+  
   bless {%stuff}, $self;
 }
 

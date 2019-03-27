@@ -1,0 +1,100 @@
+=head1 FUNCTIONS
+
+=head2 create_config()
+
+Reset configuration to default state, writing the config file.
+
+=head2 create_db()
+
+Reset configuration to default state, writing the config file.
+
+=head2 usage()
+
+Display the usage information on the command line and force exit.
+
+=head2 uninstall()
+
+Delete a project.
+Remove  bots triggering App::Able from the current  repository.
+
+=head2 setup()
+
+Creates a project
+Install bots triggering App::Able for the current project.
+
+=head2 create()
+
+Creates a project and optionally sets it up
+
+=head2 info()
+
+Return information about the project
+
+=head2 run()
+
+Run a bot if it exists. Othewise returns a list of available bots
+
+=head2 stop()
+
+Stops a bot if it's still running
+
+=head2 verify()
+
+Verify and test project
+
+=head2 plan()
+
+Creates a project plan interactively
+
+=head2 make_pack()
+
+Creates a package for project
+
+=head2 make_configure()
+
+Configure or reconfigure a project
+
+=head2 release()
+
+Releases a project
+
+=head2 monitor()
+
+Monitores a project
+
+=head2 edit()
+
+Edit a existing project
+
+
+=head2 delete_project()
+
+Delete a project
+
+=cut
+
+
+=head2 version()
+
+Display the version of App::Able in use.
+
+=head2 list()
+
+List the plugins currently installed.
+
+	list();
+
+=cut
+
+
+=head1 PRIVATE FUNCTIONS
+
+=head2 get_bots_directory()
+
+Return the path to the bots directory for the current  repository.
+
+	my $bots_directory = get_bots_directory();
+
+=cut
+
+
