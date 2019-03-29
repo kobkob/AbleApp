@@ -1,0 +1,24 @@
+language: perl
+perl:
+  - "5.10.0"
+  - "5.10.1"
+  - "5.12.0"
+  - "5.12.5"
+  - "5.18.2"
+  - "5.20.1"
+  - "5.22.0"
+addons:
+  apt:
+    packages:
+      - bash
+sudo: false
+script:
+  - prove -lv $(test-dirs)
+branches:
+  except:
+    - /^wip\//
+    - /^dev/
+    - /^app/
+    - /^blocked/
+notifications:
+  email: false
