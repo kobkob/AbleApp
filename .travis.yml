@@ -4,8 +4,12 @@ addons:
     packages:
       - bash
 sudo: false
+before_install:
+  - eval $(curl https://travis-perl.github.io/init) --auto
+after_install:
+  - make realclean
 script:
-  - prove -lv $(test-dirs)
+  - prove -lv
 branches:
   except:
     - /^wip\//

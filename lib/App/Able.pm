@@ -78,11 +78,8 @@ sub load_conf
   my($self,
      $conf, # $ : Object with all configuration 
    ) = @_;
-#UML_MODELER_BEGIN_PERSONAL_CODE_load_conf
-  $self = shift;
   $self->{config} = $conf;
   return $self->{config}->{version};
-#UML_MODELER_END_PERSONAL_CODE_load_conf
 }
 
 
