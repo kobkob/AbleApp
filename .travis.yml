@@ -1,13 +1,4 @@
 language: perl
-addons:
-  apt:
-    packages:
-      - bash
-sudo: false
-after_install:
-  - make realclean
-script:
-  - prove -lv
 branches:
   except:
     - /^wip\//
