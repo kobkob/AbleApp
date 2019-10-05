@@ -17,7 +17,7 @@ Works as a Facade for the 7 modules.
 
 implements the command abl, see below.
 
-## SINOPSYS
+## SYNOPSIS
 
 - __Command line__
 
